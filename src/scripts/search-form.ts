@@ -1,7 +1,7 @@
 import { renderBlock } from './lib.js'
-import {minDate, maxDate, dateFrom, dateTo} from './calc-dates.js'
+import {getDefaultCheckInDate, getDefaultCheckOutDate, getMinDate, getMaxDate} from './calc-dates.js'
 
-export function renderSearchFormBlock (arrival:string = dateFrom, departure:string = dateTo) {
+export function renderSearchFormBlock (checkInDate?:string, checkOutDate?:string) {
 
   renderBlock(
     'search-form-block',
@@ -22,11 +22,11 @@ export function renderSearchFormBlock (arrival:string = dateFrom, departure:stri
         <div class="row">
           <div>
             <label for="check-in-date">Дата заезда</label>
-            <input id="check-in-date" type="date" value="${arrival}" min="${minDate}" max="${maxDate}" name="checkin" />
+            <input id="check-in-date" type="date" value="${checkInDate || getDefaultCheckInDate()}" min="${getMinDate()}" max="${getMaxDate()}" name="checkin" />
           </div>
           <div>
             <label for="check-out-date">Дата выезда</label>
-            <input id="check-out-date" type="date" value="${departure}" min="${minDate}" max="${maxDate}" name="checkout" />
+            <input id="check-out-date" type="date" value="${checkOutDate || getDefaultCheckOutDate()}" min="${getMinDate()}" max="${getMaxDate()}" name="checkout" />
           </div>
           <div>
             <label for="max-price">Макс. цена суток</label>

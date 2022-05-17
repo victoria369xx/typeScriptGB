@@ -2,80 +2,67 @@ let year;
 let month;
 let day; 
 
+const TO_CALENDAR_MONTH = 1; 
 
-// преобразование месяца и дня с добавлением нуля, если число < 10
-function formatMonth (month) {
-    month = month < 10 ? "0"+ month : month
-    return month
+const FIRST_DAY_OF_MONTH = 1;
+const FIRST_MONTH_OF_YEAR = 1;
+
+const NEXT_YEAR = 1;
+const NEXT_MONTH = 2;
+const NEXT_DAY = 1;
+
+const TWO_DAYS_STAY = 2; 
+
+export function getMinDate () : string {
+    year = (new Date().getFullYear()).toString();
+    month = (new Date().getMonth()+ TO_CALENDAR_MONTH).toString().padStart(2,"0");
+    day = (new Date().getDate()).toString().padStart(2,"0");
+
+    return `${year}-${month}-${day}`
 }
 
-function formatDay (day) {
-    day = day < 10 ? "0"+ day : day
-    return day
-}
-//Минимальная дата, которую можно выбрать - сегодня
+export function getMaxDate () : string {
+    month = new Date().getMonth()+ NEXT_MONTH;
+    year = (month == FIRST_DAY_OF_MONTH) ? new Date().getFullYear() + NEXT_YEAR : new Date().getFullYear(); 
 
-function calcMinDate () {
-    year = new Date().getFullYear();
-    month = new Date().getMonth()+1;
-    day = new Date().getDate();
+    function getLastDayOfMonth(year, month){
+        day = new Date(year, month, 0);
+        return day.getDate();
+    }
 
-    month = month < 10 ? "0"+ month : month
-    day = day < 10 ? "0"+ day : day
-    return  String(`${year}-${month}-${day}`) 
-}
-
-export const minDate = calcMinDate();
-//console.log(minDate) на момент дз 2022/05/14
-
-//Максимальная дата - последний день следующего месяца
-
-function getLastDayOfMonth(year, month){
-    day = new Date(year, month, 0);
-    return day.getDate();
-}
-
-function calcMaxDate () {
-    month = new Date().getMonth()+2;
-    year = (month == 1) ? new Date().getFullYear() + 1 : new Date().getFullYear(); 
     day = getLastDayOfMonth(year, month) 
 
-    month = month < 10 ? "0"+ month : month
-    day = day < 10 ? "0"+ day : day
-    return String(`${year}-${month}-${day}`)
+    year = year.toString();
+    month = month.toString().padStart(2, "0"); 
+    day = day.toString().padStart(2, "0");
+
+    return `${year}-${month}-${day}`
 }
 
-export const maxDate = calcMaxDate();
-//console.log(maxDate) на момент дз 2022/06/30
 
-// посчитать дату заезда по умолчанию (сегодня + 1)
+export function getDefaultCheckInDate () :string {
+    day = new Date().getDate() + NEXT_DAY;
+    month = (day == FIRST_DAY_OF_MONTH) ? new Date().getMonth()+ NEXT_MONTH : new Date().getMonth()+ TO_CALENDAR_MONTH; 
+    year = (month == FIRST_MONTH_OF_YEAR) ? new Date().getFullYear() + NEXT_YEAR : new Date().getFullYear()
 
-function calcDateFrom () {
-    day = new Date().getDate() + 1;
-    month = (day == 1) ? new Date().getMonth()+2 : new Date().getMonth()+1; 
-    year = (month == 1) ? new Date().getFullYear() + 1 : new Date().getFullYear()
+    year = year.toString();
+    month = month.toString().padStart(2, "0"); 
+    day = day.toString().padStart(2, "0");
 
-    
-    month = formatMonth(month)
-    day = formatDay(day)
-    return String(`${year}-${month}-${day}`)
+    return `${year}-${month}-${day}`
 }
 
-export const dateFrom = calcDateFrom()
-//console.log(dateFrom) на момент дз 2022/05/15
 
-// посчитать дату выезда по умолчанию (дата заезда + 2)
 
-function calcDateTo () {
-    day = new Date().getDate() + 3;
-    month = (day == 1) ? new Date().getMonth()+2 : new Date().getMonth()+1; 
-    year = (month == 1) ? new Date().getFullYear() + 1 : new Date().getFullYear()
+export function getDefaultCheckOutDate () : string {
+    day = new Date().getDate() + NEXT_DAY + TWO_DAYS_STAY;
+    month = (day == FIRST_DAY_OF_MONTH) ? new Date().getMonth()+ NEXT_MONTH : new Date().getMonth()+ TO_CALENDAR_MONTH; 
+    year = (month == FIRST_MONTH_OF_YEAR) ? new Date().getFullYear() + NEXT_YEAR : new Date().getFullYear()
 
-    
-    month = formatMonth(month)
-    day = formatDay(day)
-    return String(`${year}-${month}-${day}`)
+    year = year.toString();
+    month = month.toString().padStart(2, "0"); 
+    day = day.toString().padStart(2, "0");
+
+    return `${year}-${month}-${day}`
 }
 
-export const dateTo = calcDateTo()
-//console.log(dateTo) на момент дз 2022/05/17
