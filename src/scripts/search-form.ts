@@ -43,7 +43,7 @@ export function renderSearchFormBlock (checkInDate?:string, checkOutDate?:string
     `
   )
 
-  const button = document.querySelector('#search-btn');
+  const button = document.querySelector('#search-btn'); 
   if(button) {
     button.addEventListener('click', (event)=> {
       event.preventDefault()
