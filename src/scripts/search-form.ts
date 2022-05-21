@@ -1,5 +1,7 @@
 import { renderBlock } from './lib.js'
 import {getDefaultCheckInDate, getDefaultCheckOutDate, getMinDate, getMaxDate} from './calc-dates.js'
+import {searchFormHandler} from './search-form-handler.js'
+
 
 export function renderSearchFormBlock (checkInDate?:string, checkOutDate?:string) {
 
@@ -33,11 +35,19 @@ export function renderSearchFormBlock (checkInDate?:string, checkOutDate?:string
             <input id="max-price" type="text" value="" name="price" class="max-price" />
           </div>
           <div>
-            <div><button>Найти</button></div>
+            <div id="search-btn"><button>Найти</button></div>
           </div>
         </div>
       </fieldset>
     </form>
     `
   )
+
+  const button = document.querySelector('#search-btn');
+  if(button) {
+    button.addEventListener('click', (event)=> {
+      event.preventDefault()
+      searchFormHandler()
+    })
+  }
 }
