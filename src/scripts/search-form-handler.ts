@@ -21,10 +21,10 @@ export function searchFormHandler (){
         price : price
     }
 
-    search(searchFormData, showPlaces(place, "Ошибка!"))
+    search(searchFormData, () => showPlaces(place, "Ошибка!"))
 }
 
-function showPlaces (place, error:string) {
+function showPlaces (place : IPlace, error:string) : void{
     const random : number = Math.random()
     if (random < 0.5){
         console.log("Result: ", place)
