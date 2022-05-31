@@ -47,7 +47,7 @@ export function getDefaultCheckInDate () :string {
 
     year = year.toString();
     month = month.toString().padStart(2, "0"); 
-    day = day.toString().padStart(2, "0");
+    day = (day+NEXT_DAY).toString().padStart(2, "0");
 
     return `${year}-${month}-${day}`
 }
@@ -61,8 +61,10 @@ export function getDefaultCheckOutDate () : string {
 
     year = year.toString();
     month = month.toString().padStart(2, "0"); 
-    day = day.toString().padStart(2, "0");
+    day = day.toString().padStart(2, "0"); 
 
     return `${year}-${month}-${day}`
 }
+
+
 
