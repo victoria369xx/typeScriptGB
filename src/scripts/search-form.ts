@@ -2,7 +2,7 @@ import { renderBlock } from './lib.js'
 import {getDefaultCheckInDate, getDefaultCheckOutDate, getMinDate, getMaxDate} from './calc-dates.js'
 import {searchFormHandler} from './search-form-handler.js'
 import {baseURL} from './API/index.js'
-
+import {renderSearchResultsBlock} from './search-results.js'
 
 export function renderSearchFormBlock (checkInDate?:string, checkOutDate?:string) {
 
@@ -43,18 +43,19 @@ export function renderSearchFormBlock (checkInDate?:string, checkOutDate?:string
     </form>
     `
   )
+  
 
   function fetchPlaces () {
     const coordinates = '59.9386,30.3141'
-    const checkIn = new Date(checkInDate).getTime()
-    const checkOut = new Date (checkOutDate).getTime()
+    const checkIn = new Date(`2022-06-01`).getTime()
+    const checkOut = new Date (`2022-06-03`).getTime()
     try {
       fetch(baseURL + `/places/?coordinates=${coordinates}&checkInDate=${checkIn}&checkOutDate=${checkOut}&maxPrice=5000`)
       .then((response)=>{
           return response.json()
       })
       .then((data)=>{
-        console.log(data)
+        renderSearchResultsBlock(data)
       })
     } catch (error) {
         console.log('Не удалось получить данные API',error)
