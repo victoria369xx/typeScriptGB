@@ -44,13 +44,14 @@ export function renderSearchFormBlock (checkInDate?:string, checkOutDate?:string
     `
   )
   
+  
 
   function fetchPlaces () {
     const coordinates = '59.9386,30.3141'
-    const checkIn = new Date(`2022-06-01`).getTime()
-    const checkOut = new Date (`2022-06-03`).getTime()
+    const checkIn = Date.parse(checkInDate || getDefaultCheckInDate())
+    const checkOut = Date.parse(checkOutDate || getDefaultCheckOutDate())
     try {
-      fetch(baseURL + `/places/?coordinates=${coordinates}&checkInDate=${checkIn}&checkOutDate=${checkOut}&maxPrice=5000`)
+      fetch(baseURL + `/places/?coordinates=${coordinates}&checkInDate=${checkIn}&checkOutDate=${checkOut}&maxPrice=30000`)
       .then((response)=>{
           return response.json()
       })
