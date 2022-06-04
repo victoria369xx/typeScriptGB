@@ -1,6 +1,5 @@
 import { renderBlock } from './lib.js'
 import {getDefaultCheckInDate, getDefaultCheckOutDate, getMinDate, getMaxDate} from './calc-dates.js'
-import {searchFormHandler} from './search-form-handler.js'
 import {baseURL} from './API/index.js'
 import {renderSearchResultsBlock} from './search-results.js'
 
@@ -50,8 +49,9 @@ export function renderSearchFormBlock (checkInDate?:string, checkOutDate?:string
     const coordinates = '59.9386,30.3141'
     const checkIn = Date.parse(checkInDate || getDefaultCheckInDate())
     const checkOut = Date.parse(checkOutDate || getDefaultCheckOutDate())
+    const price : number  =  parseInt((document.querySelector('#max-price') as HTMLInputElement).value)
     try {
-      fetch(baseURL + `/places/?coordinates=${coordinates}&checkInDate=${checkIn}&checkOutDate=${checkOut}&maxPrice=30000`)
+      fetch(baseURL + `/places/?coordinates=${coordinates}&checkInDate=${checkIn}&checkOutDate=${checkOut}&maxPrice=${price}`)
       .then((response)=>{
           return response.json()
       })
@@ -68,7 +68,6 @@ export function renderSearchFormBlock (checkInDate?:string, checkOutDate?:string
   if(button) {
     button.addEventListener('click', (event)=> {
       event.preventDefault()
-      searchFormHandler()
       fetchPlaces()
     })
   }

@@ -1,6 +1,6 @@
 import { renderBlock } from './lib.js'
 
-export function renderSearchStubBlock () {
+export function renderSearchStubBlock() {
   renderBlock(
     'search-results-block',
     `
@@ -12,7 +12,7 @@ export function renderSearchStubBlock () {
   )
 }
 
-export function renderEmptyOrErrorSearchBlock (reasonMessage) {
+export function renderEmptyOrErrorSearchBlock(reasonMessage) {
   renderBlock(
     'search-results-block',
     `
@@ -24,16 +24,17 @@ export function renderEmptyOrErrorSearchBlock (reasonMessage) {
   )
 }
 
-export function renderSearchResultsBlock (places) {
-  let listOfPlaces = ''
+export function renderSearchResultsBlock(places) {
+  let listOfPlacesHTML = ''
+  const listOfPlaces = places
 
-  if (Array.isArray(places) && places.length > 0){
-    places.forEach(place=> {
+  if (Array.isArray(places) && places.length > 0) {
+    places.forEach(place => {
 
-      listOfPlaces += ` <li class="result">
+      listOfPlacesHTML += ` <li class="result">
         <div class="result-container">
           <div class="result-img-container">
-            <div class="favorites active"></div>
+            <div class="favorites" id=${place.id}></div>
             <img class="result-img" src=${place.image} alt="">
           </div>	
           <div class="result-info">
@@ -51,8 +52,8 @@ export function renderSearchResultsBlock (places) {
           </div>
         </div>
       </li>`
-    }) 
- 
+    })
+
   }
   renderBlock(
     'search-results-block',
@@ -69,9 +70,33 @@ export function renderSearchResultsBlock (places) {
         </div>
     </div>
     <ul class="results-list ">
-      ${listOfPlaces}
+      ${listOfPlacesHTML}
     </ul>
     `
   )
+
+
+  const favoritesEl = document.querySelectorAll('.favorites') as NodeListOf<HTMLDivElement>
+  favoritesEl.forEach(elem => {
+    elem.addEventListener('click', () => {
+      if (elem.classList.contains('active')) {
+        elem.classList.remove('active')
+      } else {
+        elem.classList.add('active')
+      }
+        
+        const searchId = elem.id;
+        const favPlace = listOfPlaces.find(place => place.id == searchId)
+        const favPlaceLS = {id: favPlace.id, name: favPlace.name, img: favPlace.img} 
+        
+        const LS = JSON.parse(localStorage.getItem('favorite'))
+        if(LS.includes(favPlaceLS.name)){
+          console.log('уже в массиве')
+        } else {
+          console.log('надо добавить')
+        }
+        
+    })
+  })
 
 }
