@@ -7,13 +7,13 @@ function getUserData (key:string) {
      }
   }
   
-  export function getFavoritesAmount (key:string) {
-    const amount : unknown = Number(localStorage.getItem(key))
-    if (typeof amount == "number" && !isNaN(amount)) {
-      return amount
-    } else {
-      console.error("FavoritesAmount must be a number")
+     
+  export function getFavoritesAmount (key:string) :number {
+    const amount = JSON.parse(localStorage.getItem(key))
+    if(amount !== null){
+      return amount.length
     }
   }
   
  export const user = getUserData('user');
+ export const favoritesAmount = getFavoritesAmount('favorite')// вызывать в другом месте

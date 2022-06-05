@@ -1,4 +1,7 @@
 import { renderBlock } from './lib.js'
+import { getFavoritesAmount } from './user-data.js';
+
+export let favoritesAmount = getFavoritesAmount('favorite');
 
 export function renderSearchStubBlock() {
   renderBlock(
@@ -26,15 +29,17 @@ export function renderEmptyOrErrorSearchBlock(reasonMessage) {
 
 export function renderSearchResultsBlock(places) {
   let listOfPlacesHTML = ''
-  const listOfPlaces = places
-
+  const listOfPlaces = places;
+  const favPlacesArr = JSON.parse(localStorage.getItem('favorite'));
+  const getNotMarkedFav = listOfPlaces.filter(place => favPlacesArr.every(item => item.id !== place.id));
+  
   if (Array.isArray(places) && places.length > 0) {
     places.forEach(place => {
 
       listOfPlacesHTML += ` <li class="result">
         <div class="result-container">
           <div class="result-img-container">
-            <div class="favorites" id=${place.id}></div>
+            <div class="favorites active" id=${place.id}></div>
             <img class="result-img" src=${place.image} alt="">
           </div>	
           <div class="result-info">
@@ -76,27 +81,37 @@ export function renderSearchResultsBlock(places) {
   )
 
 
+  function toggleFavoriteItem(id, element) {
+    const searchId = id;
+    const favPlace = listOfPlaces.find(place => place.id == searchId);
+    const favPlaceLS = { id: favPlace.id, name: favPlace.name, image: favPlace.image };
+    
+    if (!(element.classList.contains('active'))) {
+      element.classList.add('active');
+      favPlacesArr.push(favPlaceLS);
+      localStorage.setItem('favorite', JSON.stringify(favPlacesArr));
+    } else {
+      element.classList.toggle('active');
+      const filteredResult = favPlacesArr.filter(place => place.id !== favPlaceLS.id)
+      localStorage.setItem('favorite', JSON.stringify(filteredResult))
+    }
+    favoritesAmount = getFavoritesAmount('favorite')
+  }
+
+  const ids = getNotMarkedFav.map(obj => obj.id)
+
   const favoritesEl = document.querySelectorAll('.favorites') as NodeListOf<HTMLDivElement>
   favoritesEl.forEach(elem => {
+    if(ids.includes(Number(elem.id))){
+      elem.classList.toggle('active')
+    }
+  })
+
+  favoritesEl.forEach(elem => {
     elem.addEventListener('click', () => {
-      if (elem.classList.contains('active')) {
-        elem.classList.remove('active')
-      } else {
-        elem.classList.add('active')
-      }
-        
-        const searchId = elem.id;
-        const favPlace = listOfPlaces.find(place => place.id == searchId)
-        const favPlaceLS = {id: favPlace.id, name: favPlace.name, img: favPlace.img} 
-        
-        const LS = JSON.parse(localStorage.getItem('favorite'))
-        if(LS.includes(favPlaceLS.name)){
-          console.log('уже в массиве')
-        } else {
-          console.log('надо добавить')
-        }
-        
+        toggleFavoriteItem(elem.id, elem)
     })
   })
 
 }
+

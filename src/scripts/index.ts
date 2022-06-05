@@ -3,10 +3,11 @@ import { renderSearchStubBlock } from './search-results.js'
 import { renderUserBlock } from './user.js'
 import { renderToast } from './lib.js'
 import {user} from './user-data.js'
+import {favoritesAmount} from './search-results.js'
 
 
 window.addEventListener('DOMContentLoaded', () => {
-  renderUserBlock(user)
+  renderUserBlock(user,favoritesAmount)
   renderSearchFormBlock()
   renderSearchStubBlock()
    renderToast(
