@@ -2,11 +2,13 @@ import { renderSearchFormBlock } from './search-form.js'
 import { renderSearchStubBlock } from './search-results.js'
 import { renderUserBlock } from './user.js'
 import { renderToast } from './lib.js'
-import {user, favouritesAmount} from './user-data.js'
+import {user} from './getDataFromLS.js'
+import {favAmountParam} from './search-results.js'
+
 
 
 window.addEventListener('DOMContentLoaded', () => {
-  renderUserBlock(user, favouritesAmount)
+  renderUserBlock(user, favAmountParam.amount)
   renderSearchFormBlock()
   renderSearchStubBlock()
    renderToast(
@@ -14,4 +16,5 @@ window.addEventListener('DOMContentLoaded', () => {
       {name: 'Понял', handler: () => {console.log('Уведомление закрыто')}}
   )
 })
+
 

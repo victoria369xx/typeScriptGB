@@ -40,29 +40,41 @@ export function getMaxDate () : string {
 }
 
 
-export function getDefaultCheckInDate () :string {
-    day = new Date().getDate() + NEXT_DAY;
-    month = (day == FIRST_DAY_OF_MONTH) ? new Date().getMonth()+ NEXT_MONTH : new Date().getMonth()+ TO_CALENDAR_MONTH; 
-    year = (month == FIRST_MONTH_OF_YEAR) ? new Date().getFullYear() + NEXT_YEAR : new Date().getFullYear()
+export function getDefaultCheckInDate (): string {
+    month = new Date().getMonth() + TO_CALENDAR_MONTH;
+    const totalDaysCurrMonth = new Date(2022, month, 0).getDate();
+    day = new Date().getDate();
 
-    year = year.toString();
-    month = month.toString().padStart(2, "0"); 
-    day = day.toString().padStart(2, "0");
-
+    if (day == totalDaysCurrMonth) {
+        day = '01'
+        month = (month + NEXT_MONTH).toString().padStart(2, "0");
+        year = (month == FIRST_MONTH_OF_YEAR) ? new Date().getFullYear() + NEXT_YEAR : new Date().getFullYear()
+    } else {
+        day = (day + NEXT_DAY).toString().padStart(2, "0"); 
+        month = month.toString().padStart(2, "0");
+        year = new Date().getFullYear().toString();
+    }
     return `${year}-${month}-${day}`
+   
 }
-
-
 
 export function getDefaultCheckOutDate () : string {
-    day = new Date().getDate() + NEXT_DAY + TWO_DAYS_STAY;
-    month = (day == FIRST_DAY_OF_MONTH) ? new Date().getMonth()+ NEXT_MONTH : new Date().getMonth()+ TO_CALENDAR_MONTH; 
-    year = (month == FIRST_MONTH_OF_YEAR) ? new Date().getFullYear() + NEXT_YEAR : new Date().getFullYear()
+    month = new Date().getMonth() + TO_CALENDAR_MONTH;
+    const totalDaysCurrMonth = new Date(2022, month, 0).getDate();
+    day = new Date().getDate();
 
-    year = year.toString();
-    month = month.toString().padStart(2, "0"); 
-    day = day.toString().padStart(2, "0");
+    if (day == totalDaysCurrMonth) {
+        day = '03'
+        month = (month + NEXT_MONTH).toString().padStart(2, "0");
+        year = (month == FIRST_MONTH_OF_YEAR) ? new Date().getFullYear() + NEXT_YEAR : new Date().getFullYear()
+    } else {
+        day = (day + NEXT_DAY + TWO_DAYS_STAY).toString().padStart(2, "0"); 
+        month = month.toString().padStart(2, "0");
+        year = new Date().getFullYear().toString();
+    }
 
     return `${year}-${month}-${day}`
 }
+
+
 

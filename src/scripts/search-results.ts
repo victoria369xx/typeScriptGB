@@ -1,6 +1,18 @@
 import { renderBlock } from './lib.js'
+import { getFavoritePlacesArray,getFavoritesAmount} from './getDataFromLS.js';
 
-export function renderSearchStubBlock () {
+const favoritesAmount = getFavoritesAmount('amount');
+
+export const favAmountParam = {
+  amount: favoritesAmount, 
+
+  set  current (value:number) {
+       this.amount = value
+       console.log(this.amount) // не перезаписывает значение в хэдере, но верно выводит в консоль
+  }
+}
+
+export function renderSearchStubBlock() {
   renderBlock(
     'search-results-block',
     `
@@ -12,7 +24,7 @@ export function renderSearchStubBlock () {
   )
 }
 
-export function renderEmptyOrErrorSearchBlock (reasonMessage) {
+export function renderEmptyOrErrorSearchBlock(reasonMessage) {
   renderBlock(
     'search-results-block',
     `
@@ -24,7 +36,38 @@ export function renderEmptyOrErrorSearchBlock (reasonMessage) {
   )
 }
 
-export function renderSearchResultsBlock () {
+export function renderSearchResultsBlock(places) {
+  let listOfPlacesHTML = ''
+  const listOfPlaces = places;
+
+  
+  if (Array.isArray(places) && places.length > 0) {
+    places.forEach(place => {
+
+      listOfPlacesHTML += ` <li class="result">
+        <div class="result-container">
+          <div class="result-img-container">
+            <div class="favorites active" id=${place.id}></div>
+            <img class="result-img" src=${place.image} alt="">
+          </div>	
+          <div class="result-info">
+            <div class="result-info--header">
+              <p>${place.name}</p>
+              <p class="price">${place.price}</p>
+            </div>
+            <div class="result-info--map"><i class="map-icon"></i> ${place.remoteness} км от вас</div>
+            <div class="result-info--descr">${place.description}</div>
+            <div class="result-info--footer">
+              <div>
+                <button>Забронировать</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>`
+    })
+
+  }
   renderBlock(
     'search-results-block',
     `
@@ -39,50 +82,50 @@ export function renderSearchResultsBlock () {
             </select>
         </div>
     </div>
-    <ul class="results-list">
-      <li class="result">
-        <div class="result-container">
-          <div class="result-img-container">
-            <div class="favorites active"></div>
-            <img class="result-img" src="./img/result-1.png" alt="">
-          </div>	
-          <div class="result-info">
-            <div class="result-info--header">
-              <p>YARD Residence Apart-hotel</p>
-              <p class="price">13000&#8381;</p>
-            </div>
-            <div class="result-info--map"><i class="map-icon"></i> 2.5км от вас</div>
-            <div class="result-info--descr">Комфортный апарт-отель в самом сердце Санкт-Петербрга. К услугам гостей номера с видом на город и бесплатный Wi-Fi.</div>
-            <div class="result-info--footer">
-              <div>
-                <button>Забронировать</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
-      <li class="result">
-        <div class="result-container">
-          <div class="result-img-container">
-            <div class="favorites"></div>
-            <img class="result-img" src="./img/result-2.png" alt="">
-          </div>	
-          <div class="result-info">
-            <div class="result-info--header">
-              <p>Akyan St.Petersburg</p>
-              <p class="price">13000&#8381;</p>
-            </div>
-            <div class="result-info--map"><i class="map-icon"></i> 1.1км от вас</div>
-            <div class="result-info--descr">Отель Akyan St-Petersburg с бесплатным Wi-Fi на всей территории расположен в историческом здании Санкт-Петербурга.</div>
-            <div class="result-info--footer">
-              <div>
-                <button>Забронировать</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
+    <ul class="results-list ">
+      ${listOfPlacesHTML}
     </ul>
     `
   )
+
+ 
+  const favPlacesLiked = getFavoritePlacesArray();
+  const getNotMarkedFav = listOfPlaces.filter(place => favPlacesLiked.every(item => item.id !== place.id)); 
+  const ids = getNotMarkedFav.map(obj => obj.id); 
+  
+
+  function toggleFavoriteItem(elementId, element) {
+    const favPlace = listOfPlaces.find(place => place.id == elementId);
+    const favPlaceLS = { id: favPlace.id, name: favPlace.name, image: favPlace.image };
+    const favPlacesArr = getFavoritePlacesArray();
+
+    if (!(element.classList.contains('active'))) {
+      element.classList.add('active');
+      const favPlace = listOfPlaces.find(place => place.id == elementId);
+      const favPlaceLS = { id: favPlace.id, name: favPlace.name, image: favPlace.image };
+      favPlacesArr.push(favPlaceLS);
+      localStorage.setItem('favorite', JSON.stringify(favPlacesArr));
+      localStorage.setItem('amount', JSON.stringify(favPlacesArr.length));
+      favAmountParam.current = favPlacesArr.length;
+    } else {
+      element.classList.toggle('active');
+      const filteredResult = favPlacesArr.filter(place => place.id !== favPlaceLS.id);
+      localStorage.setItem('favorite', JSON.stringify(filteredResult));
+      localStorage.setItem('amount', JSON.stringify(filteredResult.length));
+      favAmountParam.current = filteredResult.length;
+    }
+  }
+
+  const favoritesEl = document.querySelectorAll('.favorites') as NodeListOf<HTMLDivElement>
+  favoritesEl.forEach(elem => {
+    if(ids.includes(Number(elem.id))){
+      elem.classList.toggle('active')
+    }
+    elem.addEventListener('click', () => {
+      toggleFavoriteItem(elem.id, elem)
+  })
+  })
+
+
 }
+
