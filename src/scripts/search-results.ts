@@ -1,7 +1,16 @@
 import { renderBlock } from './lib.js'
-import { getFavoritesAmount } from './user-data.js';
+import { getFavoritePlacesArray,getFavoritesAmount} from './getDataFromLS.js';
 
-export let favoritesAmount = getFavoritesAmount('favorite');
+const favoritesAmount = getFavoritesAmount('amount');
+
+export const favAmountParam = {
+  amount: favoritesAmount, 
+
+  set  current (value:number) {
+       this.amount = value
+       console.log(this.amount)
+  }
+}
 
 export function renderSearchStubBlock() {
   renderBlock(
@@ -30,8 +39,7 @@ export function renderEmptyOrErrorSearchBlock(reasonMessage) {
 export function renderSearchResultsBlock(places) {
   let listOfPlacesHTML = ''
   const listOfPlaces = places;
-  const favPlacesArr = JSON.parse(localStorage.getItem('favorite'));
-  const getNotMarkedFav = listOfPlaces.filter(place => favPlacesArr.every(item => item.id !== place.id));
+
   
   if (Array.isArray(places) && places.length > 0) {
     places.forEach(place => {
@@ -80,38 +88,44 @@ export function renderSearchResultsBlock(places) {
     `
   )
 
+ 
+  const favPlacesLiked = getFavoritePlacesArray();
+  const getNotMarkedFav = listOfPlaces.filter(place => favPlacesLiked.every(item => item.id !== place.id)); 
+  const ids = getNotMarkedFav.map(obj => obj.id); 
+  
 
-  function toggleFavoriteItem(id, element) {
-    const searchId = id;
-    const favPlace = listOfPlaces.find(place => place.id == searchId);
+  function toggleFavoriteItem(elementId, element) {
+    const favPlace = listOfPlaces.find(place => place.id == elementId);
     const favPlaceLS = { id: favPlace.id, name: favPlace.name, image: favPlace.image };
-    
+    const favPlacesArr = getFavoritePlacesArray();
+
     if (!(element.classList.contains('active'))) {
       element.classList.add('active');
+      const favPlace = listOfPlaces.find(place => place.id == elementId);
+      const favPlaceLS = { id: favPlace.id, name: favPlace.name, image: favPlace.image };
       favPlacesArr.push(favPlaceLS);
       localStorage.setItem('favorite', JSON.stringify(favPlacesArr));
+      localStorage.setItem('amount', JSON.stringify(favPlacesArr.length));
+      favAmountParam.current = favPlacesArr.length;
     } else {
       element.classList.toggle('active');
-      const filteredResult = favPlacesArr.filter(place => place.id !== favPlaceLS.id)
-      localStorage.setItem('favorite', JSON.stringify(filteredResult))
+      const filteredResult = favPlacesArr.filter(place => place.id !== favPlaceLS.id);
+      localStorage.setItem('favorite', JSON.stringify(filteredResult));
+      localStorage.setItem('amount', JSON.stringify(filteredResult.length));
+      favAmountParam.current = filteredResult.length;
     }
-    favoritesAmount = getFavoritesAmount('favorite')
   }
-
-  const ids = getNotMarkedFav.map(obj => obj.id)
 
   const favoritesEl = document.querySelectorAll('.favorites') as NodeListOf<HTMLDivElement>
   favoritesEl.forEach(elem => {
     if(ids.includes(Number(elem.id))){
       elem.classList.toggle('active')
     }
+    elem.addEventListener('click', () => {
+      toggleFavoriteItem(elem.id, elem)
+  })
   })
 
-  favoritesEl.forEach(elem => {
-    elem.addEventListener('click', () => {
-        toggleFavoriteItem(elem.id, elem)
-    })
-  })
 
 }
 

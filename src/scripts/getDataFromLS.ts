@@ -7,13 +7,17 @@ function getUserData (key:string) {
      }
   }
   
-     
-  export function getFavoritesAmount (key:string) :number {
-    const amount = JSON.parse(localStorage.getItem(key))
-    if(amount !== null){
-      return amount.length
-    }
+
+  export function getFavoritesAmount (key: string): number {
+      const amount = JSON.parse(localStorage.getItem(key))
+      if(amount !== null) {
+          return amount
+      }
   }
   
  export const user = getUserData('user');
- export const favoritesAmount = getFavoritesAmount('favorite')// вызывать в другом месте
+
+
+export function getFavoritePlacesArray () {
+    return JSON.parse(localStorage.getItem('favorite'));
+}
