@@ -8,7 +8,7 @@ export const favAmountParam = {
 
   set  current (value:number) {
        this.amount = value
-       console.log(this.amount)
+       console.log(this.amount) // не перезаписывает значение в хэдере, но верно выводит в консоль
   }
 }
 
