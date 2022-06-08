@@ -16,6 +16,7 @@ function getUserData (key:string) {
   }
   
  export const user = getUserData('user');
+ export const favoritesAmount = getFavoritesAmount('amount')
 
 
 export function getFavoritePlacesArray () {

@@ -2,13 +2,13 @@ import { renderSearchFormBlock } from './search-form.js'
 import { renderSearchStubBlock } from './search-results.js'
 import { renderUserBlock } from './user.js'
 import { renderToast } from './lib.js'
-import {user} from './getDataFromLS.js'
-import {favAmountParam} from './search-results.js'
+import {user, favoritesAmount} from './getDataFromLS.js'
+
 
 
 
 window.addEventListener('DOMContentLoaded', () => {
-  renderUserBlock(user, favAmountParam.amount)
+  renderUserBlock(user, favoritesAmount)
   renderSearchFormBlock()
   renderSearchStubBlock()
    renderToast(

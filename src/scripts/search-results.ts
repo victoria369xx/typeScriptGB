@@ -1,16 +1,7 @@
 import { renderBlock } from './lib.js'
-import { getFavoritePlacesArray,getFavoritesAmount} from './getDataFromLS.js';
+import {user, getFavoritePlacesArray, getFavoritesAmount} from './getDataFromLS.js';
+import { renderUserBlock } from './user.js';
 
-const favoritesAmount = getFavoritesAmount('amount');
-
-export const favAmountParam = {
-  amount: favoritesAmount, 
-
-  set  current (value:number) {
-       this.amount = value
-       console.log(this.amount) // не перезаписывает значение в хэдере, но верно выводит в консоль
-  }
-}
 
 export function renderSearchStubBlock() {
   renderBlock(
@@ -106,14 +97,15 @@ export function renderSearchResultsBlock(places) {
       favPlacesArr.push(favPlaceLS);
       localStorage.setItem('favorite', JSON.stringify(favPlacesArr));
       localStorage.setItem('amount', JSON.stringify(favPlacesArr.length));
-      favAmountParam.current = favPlacesArr.length;
+      
     } else {
       element.classList.toggle('active');
       const filteredResult = favPlacesArr.filter(place => place.id !== favPlaceLS.id);
       localStorage.setItem('favorite', JSON.stringify(filteredResult));
       localStorage.setItem('amount', JSON.stringify(filteredResult.length));
-      favAmountParam.current = filteredResult.length;
     }
+    const amountUpdated = getFavoritesAmount('amount'); 
+    renderUserBlock(user, amountUpdated)
   }
 
   const favoritesEl = document.querySelectorAll('.favorites') as NodeListOf<HTMLDivElement>
