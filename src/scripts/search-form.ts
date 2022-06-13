@@ -2,6 +2,8 @@ import { renderBlock } from './lib.js'
 import {getDefaultCheckInDate, getDefaultCheckOutDate, getMinDate, getMaxDate} from './calc-dates.js'
 import {baseURL} from './API/index.js'
 import {renderSearchResultsBlock} from './search-results.js'
+import {FlatRentSdk, ISearchParams} from './flat-rent-sdk.js'
+
 
 export function renderSearchFormBlock (checkInDate?:string, checkOutDate?:string) {
 
@@ -16,10 +18,10 @@ export function renderSearchFormBlock (checkInDate?:string, checkOutDate?:string
             <input id="city" type="text" disabled value="Санкт-Петербург" />
             <input type="hidden" disabled value="59.9386,30.3141" />
           </div>
-          <!--<div class="providers">
+          <div class="providers">
             <label><input type="checkbox" name="provider" value="homy" checked /> Homy</label>
             <label><input type="checkbox" name="provider" value="flat-rent" checked /> FlatRent</label>
-          </div>--!>
+          </div>
         </div>
         <div class="row">
           <div>
@@ -43,7 +45,25 @@ export function renderSearchFormBlock (checkInDate?:string, checkOutDate?:string
     `
   )
   
+  function searchSdk () {
+
+      const myFlatRentSdk = new FlatRentSdk()
+      const checkInSdk = new Date(checkInDate || getDefaultCheckInDate())
+      const checkOutSdk = new Date(checkOutDate || getDefaultCheckOutDate())
+      const priceSdk =  parseInt((document.querySelector('#max-price') as HTMLInputElement).value)
+
+      const myParams : ISearchParams = {
+      city: 'Санкт-Петербург',
+      checkInDate: checkInSdk, 
+      checkOutDate: checkOutSdk,
+      priceLimit: priceSdk
+  }
+
+  console.log(myFlatRentSdk.search(myParams))
   
+  }
+  
+
 
   function fetchPlaces () {
     const coordinates = '59.9386,30.3141'
@@ -64,11 +84,15 @@ export function renderSearchFormBlock (checkInDate?:string, checkOutDate?:string
 
   }
 
+   
+
+ 
   const button = document.querySelector('#search-btn'); 
   if(button) {
     button.addEventListener('click', (event)=> {
       event.preventDefault()
       fetchPlaces()
+      searchSdk()
     })
   }
 
