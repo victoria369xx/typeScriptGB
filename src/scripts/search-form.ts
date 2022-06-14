@@ -19,8 +19,8 @@ export function renderSearchFormBlock (checkInDate?:string, checkOutDate?:string
             <input type="hidden" disabled value="59.9386,30.3141" />
           </div>
           <div class="providers">
-            <label><input type="checkbox" name="provider" value="homy" checked /> Homy</label>
-            <label><input type="checkbox" name="provider" value="flat-rent" checked /> FlatRent</label>
+            <label><input type="checkbox" name="provider" value="homy" id="homy" checked /> Homy</label>
+            <label><input type="checkbox" name="provider" value="flat-rent" id="flat-rent" checked /> FlatRent</label>
           </div>
         </div>
         <div class="row">
@@ -59,8 +59,8 @@ export function renderSearchFormBlock (checkInDate?:string, checkOutDate?:string
       priceLimit: priceSdk
   }
 
-  console.log(myFlatRentSdk.search(myParams))
-  
+      console.log(myFlatRentSdk.search(myParams))
+     
   }
   
 
@@ -84,15 +84,25 @@ export function renderSearchFormBlock (checkInDate?:string, checkOutDate?:string
 
   }
 
-   
+  const checkboxHomy = document.querySelector('#homy') as HTMLInputElement 
+  const checkboxFlatRent = document.querySelector('#flat-rent') as HTMLInputElement
 
  
   const button = document.querySelector('#search-btn'); 
   if(button) {
     button.addEventListener('click', (event)=> {
       event.preventDefault()
-      fetchPlaces()
-      searchSdk()
+      if(checkboxHomy.checked && !checkboxFlatRent.checked) {
+        fetchPlaces()
+      }
+      if (checkboxFlatRent.checked && !checkboxHomy.checked){
+        searchSdk()
+      }
+      if( checkboxHomy.checked && checkboxFlatRent.checked) {
+        fetchPlaces()
+        searchSdk()
+      }
+     
     })
   }
 
